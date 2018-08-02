@@ -1,0 +1,44 @@
+<div class="modal fade" id="crearAutor" tabindex="-1" role="dialog">
+  <form novalidate [formGroup]="autor" (ngSubmit)="guardar()">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5>Crear Nuevo Autor</h5>
+        </div>
+        <div class="modal-body">
+          <p>Indica el nombre y apellidos del autor que quieres añadir</p>
+          <div class="row">
+            <div class="col-2">
+              <img src="assets/images/tip.png" alt="Consejo" class="img-fluid">
+            </div>
+            <div class="col-10">
+              <small class="text-muted">
+                (Antes de crear un autor nuevo, comprueba que no exista ya en la lista de autores disponibles. Acuérdate de comprobar también las siglas. p.e. R.L. Stevenson)
+              </small>
+            </div>
+          </div>
+          <div class="form-group">
+            <h3><label for="autor-nombre">Nombre</label></h3>
+            <input type="text" class="form-control" id="autor-nombre"
+              formControlName="nombre">
+          </div>
+          <div class="form-group">
+            <h3><label for="autor-apellidos">Apellidos</label></h3>
+            <input type="text" class="form-control" id="autor-apellidos"
+              formControlName="apellidos">
+          </div>
+          <div class="alert alert-danger" *ngIf="error">
+            {{ error }}
+          </div>
+          <small class="text-muted" *ngIf="sugerencia" (click)="cambiarFormato()">
+            Cambiar formato de nombre y apellidos <img src="assets/images/refresh.png" alt="Cambiar" title="Cambiar" width="16">
+          </small>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="autor.invalid">Continuar</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

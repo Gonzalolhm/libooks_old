@@ -1,0 +1,21 @@
+<div class="container-fluid px-0">
+  <header class="sticky-top">
+    <div id="mainHeader">
+      <div class="icon icon-back" [routerLink]="['/la-nube']"></div>
+      <h1>Ordenar Nube</h1>
+      <div (click)="limpiarFiltros()">
+        Limpiar
+      </div>
+    </div>
+  </header>
+  <div class="container pb-5">
+    <form novalidate class="form-container" [formGroup]="filtros" (ngSubmit)="enviar()">
+      <div class="form-group">
+        <h3><label for="orden">Ordenar por</label></h3>
+        <select formControlName="orden" id="orden" class="form-control">
+          <option *ngFor="let orden of ordenes" [value]="orden.value">{{ orden.name }}</option>
+        </select>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="modal fade" id="coincidenciasNube" tabindex="-1" role="dialog">
+  <form novalidate>
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5>Coincidencias en la Nube</h5>
+        </div>
+        <div class="modal-body">
+          Hay {{ total }} libros similares en la nube. Comprueba que no exista lo que buscas antes de crearlo.
+          <section class="p-2">
+            <app-miniatura *ngFor="let libro of libros" [libro]="libro"></app-miniatura>
+          </section>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary">Crear de todas formas</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

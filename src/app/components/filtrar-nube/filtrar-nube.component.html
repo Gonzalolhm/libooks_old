@@ -1,0 +1,87 @@
+<div class="container-fluid px-0">
+  <header class="sticky-top">
+    <div id="mainHeader">
+      <div class="icon icon-back" [routerLink]="['/la-nube']"></div>
+      <h1>Buscar en la Nube</h1>
+      <div (click)="limpiarFiltros()">
+        Limpiar
+      </div>
+    </div>
+  </header>
+  <div class="container pb-5">
+    <form novalidate class="form-container" [formGroup]="filtros" (ngSubmit)="enviar()">
+
+      <div class="form-group">
+        <h3><label for="busqueda">Buscar</label></h3>
+        <input type="text" id="busqueda"
+          formControlName="query"
+          placeholder="Buscar..." class="form-control">
+        <div class="card mt-3">
+          <div class="card-header" data-toggle="collapse" data-target="#buscar-en">
+            Buscar En
+          </div>
+          <div class="collapse show" id="buscar-en">
+            <div class="card-body">
+
+              <div class="form-check border-bottom py-3" formArrayName="contextos" *ngFor="let contexto of filtros.controls.contextos.controls; let i = index">
+                <div class="row">
+                  <div class="col-9">
+                    {{ contextos[i].nombre }}
+                  </div>
+                  <div class="col-3">
+                    <input class="form-check-input checkbox-switch" type="checkbox"
+                      [formControlName]="i"
+                      [value]="contextos[i].value"
+                      [id]="contextos[i].id">
+                    <label class="form-check-label" [for]="contextos[i].id"></label>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <h3>Duplicados</h3>
+        <div class="form-check">
+          <div class="row">
+            <div class="col-9">
+              Ocultar libros que ya se encuentren en mi Colección
+            </div>
+            <div class="col-3">
+              <input class="form-check-input checkbox-switch" type="checkbox"
+                formControlName="duplicados"
+                id="duplicados">
+              <label class="form-check-label" for="duplicados"></label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <h3>Precisión</h3>
+        <div class="form-check">
+          <div class="row">
+            <div class="col-9">
+              Mostrar sólo coincidencias exactas
+            </div>
+            <div class="col-3">
+              <input class="form-check-input checkbox-switch" type="checkbox"
+                formControlName="precision"
+                id="precision">
+              <label class="form-check-label" for="precision"></label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fixed-bottom m-md-3">
+        <button type="submit" class="btn btn-primary btn-lg btn-block" [disabled]="cargando">
+          <span *ngIf="!cargando">Ver {{ total }} libros</span>
+          <span *ngIf="cargando"><i class="fa fa-sync fa-spin"></i></span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

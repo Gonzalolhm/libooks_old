@@ -1,0 +1,61 @@
+<div class="modal fade" tabindex="-1" id="ajustarPortada" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5>Ajustar Tamaño de la Portada</h5>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-9">
+            <label for="portada" role="button" class="btn btn-outline-primary btn-block btn-lg">Seleccionar Imagen</label>
+            <input type="file" (change)="actualizarImagen($event)" id="portada" class="d-none">
+            <image-cropper *ngIf="imagenEvent != ''"
+              [imageChangedEvent]="imagenEvent"
+              [maintainAspectRatio]="true"
+              [aspectRatio]="aspectRatio"
+              resizeToWidth="180"
+              (imageCroppedBase64)="imageCropped($event)"
+              (imageLoaded)="imageLoaded()"
+              (loadImageFailed)="loadImageFailed()">
+            </image-cropper>
+            <div class="alert alert-warning" *ngIf="imagenEvent == ''">
+              Selecciona una imagen para usar como Portada
+            </div>
+          </div>
+          <div class="col-3 text-center text-muted">
+            <small>
+              <img src="assets/images/prop1_250x400.png" alt="250x400" title="250x400" class="img-fluid"
+                (click)="aspectRatio = 250 / 400">
+              250x400
+            </small>
+            <small>
+              <img src="assets/images/prop2_250x354.png" alt="250x354" title="250x354" class="img-fluid"
+                (click)="cambiarRatio()">
+              250x354
+            </small>
+            <small>
+              <img src="assets/images/prop3_250x310.png" alt="250x310" title="250x310" class="img-fluid">
+              250x310
+            </small>
+            <small>
+              <img src="assets/images/prop4_250x250.png" alt="250x250" title="250x250" class="img-fluid">
+              250x250
+            </small>
+            <small>
+              <img src="assets/images/prop5_310x250.png" alt="310x250" title="310x250" class="img-fluid">
+              310x250
+            </small>
+            <small>
+              <img src="assets/images/prop6_362x250.png" alt="362x250" title="362x250" class="img-fluid">
+              362x250
+            </small>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Continuar</button>
+      </div>
+    </div>
+  </div>
+</div>

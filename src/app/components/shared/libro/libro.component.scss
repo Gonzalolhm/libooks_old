@@ -1,0 +1,31 @@
+$principal: #1a6782;
+
+article{
+  background-color: #fff;
+}
+article a{
+  color: $principal;
+  text-decoration: none;
+  font-weight: 600;
+}
+article h2{
+    font-size: 1.1rem;
+}
+article h3{
+    font-size: 1rem;
+}
+.portada{
+  background-position: center;
+  background-size: cover auto;
+  background-repeat: no-repeat;
+  position: relative;
+  height: 100%;
+}
+@media (min-width: 769px){
+  article h2{
+    font-size: 1.5rem;
+  }
+  article h3{
+    font-size: 1.3rem;
+  }
+}

@@ -1,0 +1,304 @@
+$principal: #1a6782;
+$principal2: #033C4F;
+
+html{
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 14px;
+}
+body{
+  background-color: #F6F6F6;
+}
+header{
+    position: relative;
+    z-index: 100;
+}
+
+.btn-primary{
+  background-color: $principal;
+  border-color: $principal;
+  color: #fff;
+}
+.btn-primary:hover{
+  background-color: $principal2;
+  border-color: $principal2;
+}
+.btn-outline-primary{
+  border-color: $principal;
+  color: $principal;
+}
+.btn-outline-primary:hover{
+  border-color: $principal2;
+  background-color: $principal2;
+}
+
+.icon{
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 2rem;
+  width: 2rem;
+  transition: all .5s ease;
+}
+.icon-menu{
+  background-image: url("assets/images/icon_menu.png");
+}
+.icon-close{
+  background-image: url("assets/images/icon_close.png");
+}
+.icon-search{
+  background-image: url("assets/images/icon_search.png");
+}
+.icon-sort{
+  background-image: url("assets/images/icon_sort.png");
+}
+.icon-add{
+  background-image: url("assets/images/icon_add.png");
+}
+.icon-filter{
+  background-image: url("assets/images/icon_filter.png");
+}
+.icon-back{
+  background-image: url("assets/images/icon_back.png");
+}
+
+input[type="checkbox"].checkbox-switch{
+  display: none;
+}
+input[type="checkbox"].checkbox-switch + label{
+  background-image: url("assets/images/check_off.png");
+  background-position: center;
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+  width: 3rem;
+  height: 1.5rem;
+  vertical-align: top;
+}
+input[type="checkbox"].checkbox-switch:checked + label{
+  background-image: url("assets/images/check_on.png");
+}
+.form-check{
+  padding-left: 0;
+  padding-right: 0;
+}
+input[type="checkbox"].checkbox-sel{
+  display: none;
+}
+input[type="checkbox"].checkbox-sel + label{
+  background-image: url("assets/images/checksel_off.png");
+  background-position: center;
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+  margin-bottom: 0px;
+  vertical-align: middle;
+  width: 1.5rem;
+  height: 1.5rem;
+  transition: all 1s ease;
+}
+input[type="checkbox"].checkbox-sel:checked + label{
+  background-image: url("assets/images/checksel_on.png");
+}
+.checkbox-list{
+  background-image: url("assets/images/list_add.png");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 2rem;
+  height: 2rem;
+  margin: 0;
+  padding: 0;
+}
+.checkbox-list.check{
+    background-image: url("assets/images/list_added.png");
+}
+
+.dropdown-menu{
+  min-width: 12rem;
+}
+
+/* HEADER */
+#mainHeader{
+  background-color: $principal;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 16px;
+}
+#mainHeader h1{
+  font-size: 1.2rem;
+  font-weight: 620;
+  margin-bottom: 0;
+  flex: 1 1 auto;
+  text-align: center;
+}
+#sectionHeader{
+  background-color: $principal;
+  padding: 8px 0;
+}
+#sectionHeader nav{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#sectionHeader nav > div{
+  flex: 1 1 auto;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+}
+@media (min-width: 769px){
+  #mainHeader{
+    justify-content: flex-start;
+    padding: 10px 20px;
+  }
+  #mainHeader h1{
+    text-align: left;
+    padding-left: 20px;
+  }
+  #sectionHeader{
+    padding-left: 20px;
+  }
+  #sectionHeader nav{
+    justify-content: flex-start;
+  }
+  #sectionHeader nav > div{
+    justify-content: flex-start;
+  }
+}
+
+#mainMenu{
+  background-color: transparent;
+  height: 100vh;
+  z-index: 99;
+  position: absolute;
+  width: 0;
+  transition: all .6s ease;
+}
+#mainMenu .menu{
+  background-color: #fff;
+  height: 100vh;
+  width: 320px;
+  left: -320px;
+  z-index: 100;
+  position: absolute;
+  transition: all .6s ease;
+}
+#mainMenu.activo{
+    background-color: rgba(0, 0, 0, 0.8);
+    width: 100%;
+}
+#mainMenu.activo .menu{
+  left: 0;
+}
+#mainMenu header{
+  background-color: $principal;
+  padding: 20px;
+  text-align: center;
+  color: #fff;
+}
+#mainMenu nav ul{
+  list-style: none;
+  padding: 0;
+}
+#mainMenu nav ul li{
+  color: #000;
+  padding: 16px;
+  border-top: 1px solid #DEDEDE;
+  font-size: 1.2rem;
+  display: flex;
+  transition: all 1s ease;
+}
+#mainMenu nav ul li.active, #mainMenu nav ul li:hover{
+  background-color: #DEDEDE;
+}
+#mainMenu nav ul li .menu-icon{
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 2rem;
+  width: 2rem;
+  margin-right: 20px;
+  transition: all 1s ease;
+}
+#mainMenu nav ul li .menu-icon-coleccion{
+  background-image: url("assets/images/menu_coleccion.png");
+}
+#mainMenu nav ul li.active .menu-icon-coleccion, #mainMenu nav ul li:hover .menu-icon-coleccion{
+  background-image: url("assets/images/menu_coleccion_sel.png");
+}
+#mainMenu nav ul li .menu-icon-recom{
+  background-image: url("assets/images/menu_recom.png");
+}
+#mainMenu nav ul li.active .menu-icon-recom, #mainMenu nav ul li:hover .menu-icon-recom{
+  background-image: url("assets/images/menu_recom_sel.png");
+}
+#mainMenu nav ul li .menu-icon-nube{
+  background-image: url("assets/images/menu_nube.png");
+}
+#mainMenu nav ul li.active .menu-icon-nube, #mainMenu nav ul li:hover .menu-icon-nube{
+  background-image: url("assets/images/menu_nube_sel.png");
+}
+#mainMenu nav ul li .menu-icon-biblios{
+  background-image: url("assets/images/menu_biblios.png");
+}
+#mainMenu nav ul li.active .menu-icon-biblios, #mainMenu nav ul li:hover .menu-icon-biblios{
+  background-image: url("assets/images/menu_biblios_sel.png");
+}
+#mainMenu nav ul li .menu-icon-amigos{
+  background-image: url("assets/images/menu_amigos.png");
+}
+#mainMenu nav ul li.active .menu-icon-amigos, #mainMenu nav ul li:hover .menu-icon-amigos{
+  background-image: url("assets/images/menu_amigos_sel.png");
+}
+
+/* Results Bar */
+.results-bar{
+  background-color: #DEDEDE;
+  font-size: 1.1rem;
+  padding: 6px 16px;
+}
+
+/* Filters Form */
+.form-container{
+  margin-top: 1rem;
+}
+.form-container .form-group{
+  background-color: #fff;
+  padding: 1rem;
+}
+.form-container .form-group h3{
+  color: $principal;
+  text-transform: uppercase;
+  font-weight: normal;
+  font-size: 1.2rem;
+}
+
+.modal .modal-header{
+  background-color: $principal;
+  color: #fff;
+}
+.modal h3{
+  font-size: 1rem;
+  color: $principal;
+  padding-bottom: 0;
+}
+
+/* Badges */
+.badge-genero, .badge-etiqueta{
+  background-color: #DCDCDC;
+  color: #444;
+  font-size: 1rem;
+  padding: 8px 12px;
+  margin: 0 8px 8px 0;
+  transition: all .6s ease;
+}
+.badge-genero.active{
+  background-color: #54d35d;
+  color: #fff;
+}
+.badge-etiqueta.active{
+  background-color: #149B88;
+  color: #fff;
+}

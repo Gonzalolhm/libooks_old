@@ -1,0 +1,8 @@
+<div class="container-fluid px-0">
+  <section class="results-bar">
+    <span>{{ total }} libros</span>
+  </section>
+  <main class="container p-3">
+      <app-libro *ngFor="let libro of libros" [libro]="libro"></app-libro>
+  </main>
+</div>

@@ -1,0 +1,33 @@
+<div class="container-fluid px-0">
+  <header class="sticky-top">
+    <div id="mainHeader">
+      <div class="icon" [ngClass]="{ 'icon-menu': !menuActivo, 'icon-close': menuActivo }" (click)="menuActivo = !menuActivo"></div>
+      <h1>La Nube</h1>
+      <div class="icon"></div>
+    </div>
+    <div id="sectionHeader">
+      <nav>
+        <div routerLink="/filtrar-nube">
+          <div class="icon icon-search"></div>
+          <span class="d-none d-md-block ml-2">Buscar</span>
+        </div>
+        <div routerLink="/ordenar-nube">
+          <div class="icon icon-sort"></div>
+          <span class="d-none d-md-block ml-2">Ordenar</span>
+        </div>
+        <div (click)="crearLibro()">
+          <div class="icon icon-add"></div>
+          <span class="d-none d-md-block ml-2">Crear</span>
+        </div>
+      </nav>
+    </div>
+    <app-menu [activo]="menuActivo"></app-menu>
+  </header>
+  <section class="results-bar">
+    <span>{{ total }} libros</span>
+  </section>
+  <main class="container p-3">
+    <app-libro *ngFor="let libro of libros" [libro]="libro" [contexto]="contexto"></app-libro>
+    <button type="button" class="btn btn-outline-primary btn-block" (click)="cargarLibros()">Cargar Más</button>
+  </main>
+</div>

@@ -1,0 +1,173 @@
+<article class="row mb-3 border">
+
+  <div class="col-12 py-2 border-bottom text-right">
+    <div class="btn-group dropdown">
+      <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      </button>
+      <div class="dropdown-menu dropdown-menu-right">
+        <div class="dropdown-item">
+          <div class="row justify-content-center align-items-center">
+            <div class="col-2 px-1">
+              <img src="assets/images/action_notify.png" alt="Notificar" class="img-fluid">
+            </div>
+            <div class="col-10 px-1">
+              Notificar un Error
+            </div>
+          </div>
+        </div>
+        <div class="dropdown-item">
+          <div class="row justify-content-center align-items-center">
+            <div class="col-2 px-1">
+              <img src="assets/images/action_tag.png" alt="Etiquetar" class="img-fluid">
+            </div>
+            <div class="col-10 px-1">
+              Etiquetar
+            </div>
+          </div>
+        </div>
+        <div class="dropdown-item">
+          <div class="row justify-content-center align-items-center">
+            <div class="col-2 px-1">
+              <img src="assets/images/action_duplicate.png" alt="Duplicar" class="img-fluid">
+            </div>
+            <div class="col-10 px-1">
+              Crear Libro Similar
+            </div>
+          </div>
+        </div>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item">
+          <div class="row justify-content-center align-items-center">
+            <div class="col-2 px-1">
+              <img src="assets/images/action_share.png" alt="Compartir" class="img-fluid">
+            </div>
+            <div class="col-10 px-1">
+              Dejar en Préstamo
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="btn-group ml-2">
+      <input type="checkbox" class="checkbox-sel" id="sel{{ libro.id_libro }}" [value]="libro.id_libro">
+      <label for="sel{{ libro.id_libro }}"></label>
+    </div>
+  </div>
+
+  <div class="col-3 p-0">
+    <img src="{{ libro.portada }}" [alt]="libro.titulo" [title]="libro.titulo" class="img-fluid">
+  </div>
+  <div class="col-9">
+
+    <div class="row py-2">
+      <div class="col-12">
+        <h2>{{ libro.titulo }}</h2>
+        <h3>
+          <span *ngFor="let autor of libro.autores; let i = index">
+            <span *ngIf="i > 0"> & </span>
+            <a>{{ autor.nombreCompleto }}</a>
+            &nbsp;
+            <span *ngIf="autor.funcion && autor.funcion != '' && autor.funcion != 'Escritor'">[{{ autor.funcion }}]</span>
+          </span>
+        </h3>
+      </div>
+    </div>
+    <div class="row py-2 border-top" *ngIf="libro.serie">
+      <div class="col-4 col-md-2">
+        Serie:
+      </div>
+      <div class="col-8 col-md-10">
+        <a>{{ libro.serie }}</a>
+        <span *ngIf="libro.num_serie > 0" class="ml-3">{{ libro.num_serie }}</span>
+      </div>
+    </div>
+    <div class="row py-2 border-top" *ngIf="libro.coleccion">
+      <div class="col-4 col-md-2">
+        Colección:
+      </div>
+      <div class="col-8 col-md-10">
+        <a>{{ libro.coleccion }}</a>
+        <span *ngIf="libro.num_coleccion > 0" class="ml-3">{{ libro.num_coleccion }}</span>
+      </div>
+    </div>
+    <div class="row py-2 border-top" *ngIf="libro.generos.length > 0">
+      <div class="col-4 col-md-2">
+        Géneros:
+      </div>
+      <div class="col-8 col-md-10">
+        <span *ngFor="let genero of libro.generos | slice:0:3; let i = index;">
+          <span *ngIf="i > 0"> & </span>
+          <a>{{ genero }}</a>
+        </span>
+        <span *ngIf="libro.generos.length > 3 && !masGeneros"> y <a (click)="masGeneros = true">{{ libro.generos.length - 3 }}</a> más </span>
+        <span *ngIf="masGeneros">
+          <span *ngFor="let genero of libro.generos | slice:3">
+            <span> & </span>
+            <a>{{ genero }}</a>
+          </span>
+        </span>
+      </div>
+    </div>
+    <div class="row py-2 border-top" *ngIf="libro.etiquetas.length > 0">
+      <div class="col-4 col-md-2">
+        Etiquetas:
+      </div>
+      <div class="col-8 col-md-10">
+        <span *ngFor="let etiqueta of libro.etiquetas | slice:0:3; let i = index">
+          <span *ngIf="i > 0"> & </span>
+          <a>{{ etiqueta }}</a>
+        </span>
+        <span *ngIf="libro.etiquetas.length > 3 && !masEtiquetas"> y <a (click)="masEtiquetas = true">{{ libro.etiquetas.length - 3 }}</a> más </span>
+        <span *ngIf="masEtiquetas">
+          <span *ngFor="let etiqueta of libro.etiquetas | slice:3">
+            <span> & </span>
+            <a>{{ etiqueta }}</a>
+          </span>
+        </span>
+      </div>
+    </div>
+    <div class="row py-2 border-top" *ngIf="libro.premios.length > 0">
+      <div class="col-4 col-md-2">
+        Premios:
+      </div>
+      <div class="col-8 col-md-10">
+        <span *ngFor="let premio of libro.premios; let i = index">
+          <span *ngIf="i > 0"> & </span>
+          <a>{{ premio.nombre }} <span *ngIf="premio.fecha_premio">{{ premio.fecha_premio }}</span></a>
+          &nbsp;
+          <span [ngSwitch]="premio.posicion">
+            <span *ngSwitchCase="0">[Ganador]</span>
+            <span *ngSwitchCase="1">[Finalista]</span>
+            <span *ngSwitchCase="2">[Semifinalista]</span>
+            <span *ngSwitchCase="3">[Mención Especial]</span>
+            <span *ngSwitchCase="4">[Otro]</span>
+          </span>
+        </span>
+      </div>
+    </div>
+
+  </div>
+  <!--
+  <div class="col-1 pl-0 pr-2 py-2 text-right">
+    <input type="checkbox" class="checkbox-sel" id="sel{{ libro.id_libro }}" [value]="libro.id_libro">
+    <label for="sel{{ libro.id_libro }}"></label>
+  </div>
+-->
+
+  <div class="col-12 border-top py-3">
+    <div class="row justify-content-center" *ngIf="contexto == 'nube'">
+      <div class="col-4">
+        <button type="button" class="btn btn-outline-secondary btn-block"
+          *ngIf="!poseido" (click)="anadirLibroColeccion()">Lo tengo</button>
+        <button type="button" class="btn btn-outline-primary btn-block"
+          *ngIf="poseido" (click)="quitarLibroColeccion()">No lo tengo</button>
+      </div>
+      <div class="col-4">
+        <button type="button" class="btn btn-outline-secondary btn-block"
+          *ngIf="!deseado" (click)="querido = true">Lo quiero</button>
+        <button type="button" class="btn btn-outline-primary btn-block"
+          *ngIf="deseado" (click)="querido = false">No lo quiero</button>
+      </div>
+    </div>
+  </div>
+</article>

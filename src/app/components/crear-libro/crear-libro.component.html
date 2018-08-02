@@ -1,0 +1,667 @@
+<div class="container-fluid px-0">
+  <header class="sticky-top">
+    <div id="mainHeader">
+      <div class="icon icon-back" [routerLink]="contexto"></div>
+      <h1>Crear en la Nube</h1>
+      <div class="icon"></div>
+    </div>
+  </header>
+  <div class="container pb-5">
+    <form novalidate class="form-container" [formGroup]="libro" (ngSubmit)="validar()" (keydown.enter)="$event.preventDefault()">
+
+      <!--TÍTULO-->
+      <div class="form-group">
+        <h3><label for="titulo">Título</label></h3>
+        <input type="text" id="titulo"
+          formControlName="titulo"
+          placeholder="Título del Libro" class="form-control"
+          (keyup)="comprobarTitulo()">
+        <div class="alert alert-warning mt-2" *ngIf="titulosDuplicados > 0">
+          Existen <strong>{{ titulosDuplicados }}</strong> títulos similares en la nube.
+          <button type="button" class="btn btn-success btn-sm"
+            data-toggle="modal" data-target="#coincidenciasNube">Comprobar</button>
+        </div>
+        <div class="alert alert-danger mt-2" *ngIf="!libro.pristine && libro.controls.titulo.value == ''">
+          Indica un título para el Libro
+        </div>
+      </div>
+
+      <!--AUTOR/ES-->
+      <div class="form-group">
+        <h3>Autor/es</h3>
+
+        <div>
+          <div class="alert alert-success"
+            formArrayName="autores"
+            *ngFor="let autor of libro.get('autores').controls; let i = index;">
+            <div [formGroupName]="i" class="row align-items-center">
+              <div class="col-10">
+                <span *ngIf="autor.controls.apellidos.value">
+                  {{ autor.controls.apellidos.value }}, </span>
+                {{ autor.controls.nombre.value }}
+                <hr>
+                Función: <select formControlName="funcion" class="form-control">
+                  <option value="Escritor">Escritor</option>
+                  <option value="Ilustrador">Ilustrador</option>
+                  <option value="Editor">Editor</option>
+                  <option value="Coordinador">Coordinador</option>
+                </select>
+              </div>
+              <div class="col-2">
+                <div class="checkbox-list check" (click)="quitarAutor(autor, i)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-inline my-3" *ngIf="libro.get('tipoAutor').value == 0">
+          <div>
+            <input type="text" placeholder="Buscar Autor"
+              formControlName="autorQuery"
+              class="form-control"
+              (keyup.enter)="buscarAutores()">
+          </div>
+          <div>
+            <button type="button" class="btn btn-outline-primary" (click)="buscarAutores()">Buscar</button>
+          </div>
+        </div>
+
+        <div *ngIf="!busquedaAutor">
+          <div class="alert"
+            [ngClass]="{ 'alert-info': libro.get('tipoAutor').value != 1, 'alert-success': libro.get('tipoAutor').value == 1 }"
+            *ngIf="(libro.get('tipoAutor').value == 0 && libro.controls.autores.controls.length == 0) || libro.get('tipoAutor').value == 1">
+            <div class="row align-items-center">
+              <div class="col-10">
+                Sin autor / Desconocido
+              </div>
+              <div class="col-2">
+                <div class="checkbox-list"
+                  [ngClass]="{ 'check': libro.get('tipoAutor').value == 1 }"
+                  (click)="cambiarTipoAutor(1)"></div>
+              </div>
+            </div>
+          </div>
+          <div class="alert"
+            [ngClass]="{ 'alert-info': libro.get('tipoAutor').value != 2, 'alert-success': libro.get('tipoAutor').value == 2 }"
+            *ngIf="(libro.get('tipoAutor').value == 0 && libro.controls.autores.controls.length == 0) || libro.get('tipoAutor').value == 2">
+            <div class="row align-items-center">
+              <div class="col-10">
+                Anónimo
+              </div>
+              <div class="col-2">
+                <div class="checkbox-list"
+                  [ngClass]="{ 'check': libro.get('tipoAutor').value == 2 }"
+                  (click)="cambiarTipoAutor(2)"></div>
+              </div>
+            </div>
+          </div>
+          <div class="alert alert-info"
+            [ngClass]="{ 'alert-info': libro.get('tipoAutor').value != 3, 'alert-success': libro.get('tipoAutor').value == 3 }"
+            *ngIf="(libro.get('tipoAutor').value == 0 && libro.controls.autores.controls.length == 0) || libro.get('tipoAutor').value == 3">
+            <div class="row align-items-center">
+              <div class="col-10">
+                Varios Autores
+              </div>
+              <div class="col-2">
+                <div class="checkbox-list"
+                  [ngClass]="{ 'check': libro.get('tipoAutor').value == 3 }"
+                  (click)="cambiarTipoAutor(3)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="libro.get('tipoAutor').value == 0">
+
+          <div>
+            <div class="alert alert-secondary" *ngFor="let autor of listaAutores; let i = index">
+              <div class="row align-items-center">
+                <div class="col-10">
+                  <span *ngIf="autor.apellidos">{{ autor.apellidos }}, </span>
+                  {{ autor.nombre }}
+                </div>
+                <div class="col-2">
+                  <div class="checkbox-list" (click)="anadirAutor(autor, i)"></div>
+                </div>
+              </div>
+            </div>
+            <div class="alert alert-warning" *ngIf="busquedaAutor && listaAutores.length == 0">
+              No hay ningún autor que coincida con la búsqueda
+            </div>
+          </div>
+
+          <div class="row justify-content-center" *ngIf="totalPagAutores > 1">
+            <div class="col-6 col-md-3">
+              <button type="button" class="btn btn-outline-secondary btn-block"
+                (click)="retrocederPagAutores()" [disabled]="pagAutores <= 1">
+                Anteriores
+              </button>
+            </div>
+            <div class="col-6 col-md-3">
+              <button type="button" class="btn btn-outline-secondary btn-block"
+                (click)="avanzarPagAutores()" [disabled]="pagAutores > totalPagAutores">
+                Siguientes
+              </button>
+            </div>
+          </div>
+
+          <div class="row mt-2">
+            <div class="col-12 text-muted text-center text-md-left">
+              ¿No encuentras lo que buscas?
+              <button type="button" class="btn btn-outline-primary btn-block"
+                data-toggle="modal" data-target="#crearAutor">
+                  Crear Nuevo
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--PORTADA-->
+      <div class="form-group">
+        <h3>Portada <small>[Opcional]</small></h3>
+
+        <div class="row">
+          <div class="col-6 col-md-4 col-lg-3">
+            <!--
+            <label for="portada"><img [src]="imagenPortada" class="img-fluid"></label>
+            <input type="file" id="portada" class="d-none" (change)="subirPortada($event)">
+            -->
+            <img [src]="imagenPortada" class="img-fluid">
+          </div>
+          <div class="col-6 col-md-6 py-2">
+            <!--
+            <label for="portada" role="button" class="btn btn-success btn-block">Seleccionar Imagen</label>
+            <input type="file" id="portada" class="d-none" (change)="subirPortada($event)">
+
+            <div class="alert alert-danger" *ngIf="errorPortada != ''">
+              {{ errorPortada }}
+            </div>
+
+            <button type="button"
+              class="btn btn-warning btn-block"
+              data-toggle="modal" data-target="#ajustarPortada"
+              [disabled]="libro.get('portada').value == ''">Ajustar Imagen</button>
+            -->
+            <button type="button" class="btn btn-outline-primary"
+              data-toggle="modal" data-target="#ajustarPortada">
+                Subir una Imagen
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!--SINOPSIS-->
+      <div class="form-group">
+        <h3>Sinopsis <small>[Opcional]</small></h3>
+        <div class="text-muted">
+          Rellenar sinopsis <input type="checkbox" class="checkbox-switch" id="conSinopsis" formControlName="conSinopsis">
+          <label for="conSinopsis" data-toggle="collapse" data-target="#infoSinopsis"></label>
+        </div>
+        <div id="infoSinopsis" class="collapse">
+          <hr>
+          <textarea formControlName="sinopsis" class="form-control"
+            maxlength="1000" rows="4"
+            placeholder="Escribe una breve descripción del argumento del libro. Evita desvelar información importante y realizar 'spoilers'"></textarea>
+        </div>
+      </div>
+
+      <!--SERIE/S-->
+      <div class="form-group">
+        <h3>Serie <small>[Opcional]</small></h3>
+        <div class="text-muted">
+          El libro pertenece a una Serie
+          <input type="checkbox" class="checkbox-switch" id="conSerie" formControlName="conSerie">
+          <label for="conSerie" data-toggle="collapse" data-target="#infoSerie"></label>
+        </div>
+        <div id="infoSerie" class="collapse">
+          <hr>
+          <div>
+            <div class="alert alert-success"
+              formArrayName="series"
+              *ngFor="let serie of libro.get('series').controls; let i = index">
+              <div [formGroupName]="i" class="row align-items-center">
+                <div class="col-10">
+                  <div class="row align-items-center">
+                    <div class="col-8">
+                      {{ serie.controls.nombre.value }}
+                    </div>
+                    <div class="col-4">
+                      <input type="number" formControlName="num" placeholder="1" min="0" class="form-control">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div class="checkbox-list check" (click)="quitarSerie(serie, i)"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-inline my-3" *ngIf="libro.get('series').controls.length == 0">
+            <div>
+              <input type="text"
+                placeholder="Buscar Serie"
+                formControlName="serieQuery"
+                class="form-control"
+                (keyup.enter)="buscarSeries()">
+            </div>
+            <div>
+              <button type="button" class="btn btn-outline-primary" (click)="buscarSeries()">Buscar</button>
+            </div>
+          </div>
+
+          <div *ngIf="libro.get('series').controls.length == 0">
+            <div>
+              <div class="alert alert-secondary" *ngFor="let serie of listaSeries; let i = index">
+                <div class="row align-items-center">
+                  <div class="col-10">
+                    {{ serie.nombre }}
+                  </div>
+                  <div class="col-2">
+                    <div class="checkbox-list" (click)="anadirSerie(serie, i)"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="alert alert-warning" *ngIf="busquedaSerie && listaSeries.length == 0">
+                No hay ninguna serie que coincida con la búsqueda
+              </div>
+            </div>
+
+            <div class="row justify-content-center" *ngIf="totalPagSeries > 0">
+              <div class="col-6 col-md-3">
+                <button type="button" class="btn btn-outline-secondary btn-block"
+                  (click)="retrocederPagSeries()" [disabled]="pagSeries <= 1">
+                  Anteriores
+                </button>
+              </div>
+              <div class="col-6 col-md-3">
+                <button type="button" class="btn btn-outline-secondary btn-block"
+                  (click)="avanzarPagSeries()" [disabled]="pagSeries > totalPagSeries">
+                  Siguientes
+                </button>
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-12 text-muted text-center text-md-left">
+                ¿No encuentras lo que buscas?
+                <button type="button" class="btn btn-outline-primary btn-block"
+                  data-toggle="modal" data-target="#crearSerie">
+                    Crear Nueva
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!--COLECCIÓN/ES-->
+      <div class="form-group">
+        <h3>Colección <small>[Opcional]</small></h3>
+        <div class="text-muted">
+          El libro pertenece a una colección
+          <input type="checkbox" class="checkbox-switch" id="conColeccion" formControlName="conColeccion">
+          <label for="conColeccion" data-toggle="collapse" data-target="#infoColeccion"></label>
+        </div>
+        <div class="collapse" id="infoColeccion">
+          <hr>
+          <div>
+            <div class="alert alert-success"
+            formArrayName="colecciones"
+              *ngFor="let coleccion of libro.get('colecciones').controls; let i = index">
+              <div [formGroupName]="i" class="row align-items-center">
+                <div class="col-10">
+                  <div class="row align-items-center">
+                    <div class="col-8">
+                      {{ coleccion.controls.nombre.value }}
+                    </div>
+                    <div class="col-4">
+                      <input type="number" formControlName="num" placeholder="0" class="form-control">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div class="checkbox-list check" (click)="quitarColeccion(coleccion, i)"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-inline my-3" *ngIf="libro.controls.colecciones.controls.length == 0">
+            <div>
+              <input type="text"
+                placeholder="Buscar Colección"
+                formControlName="coleccionQuery"
+                class="form-control"
+                (keyup.enter)="buscarColecciones()">
+            </div>
+            <div>
+              <button type="button" class="btn btn-outline-primary" (click)="buscarColecciones()">Buscar</button>
+            </div>
+          </div>
+
+          <div *ngIf="libro.controls.colecciones.controls.length == 0">
+            <div>
+              <div class="alert alert-secondary" *ngFor="let coleccion of listaColecciones; let i = index">
+                <div class="row align-items-center">
+                  <div class="col-10">
+                    {{ coleccion.nombre }}
+                  </div>
+                  <div class="col-2">
+                    <div class="checkbox-list" (click)="anadirColeccion(coleccion, i)"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="alert alert-warning" *ngIf="busquedaColeccion && listaColecciones.length == 0">
+                No hay ninguna colección que coincida con la búsqueda
+              </div>
+            </div>
+
+            <div class="row justify-content-center" *ngIf="totalPagColecciones > 0">
+              <div class="col-6 col-md-3">
+                <button type="button" class="btn btn-outline-secondary btn-block"
+                  (click)="retrocederPagColecciones()" [disabled]="pagColecciones <= 1">
+                  Anteriores
+                </button>
+              </div>
+              <div class="col-6 col-md-3">
+                <button type="button" class="btn btn-outline-secondary btn-block"
+                  (click)="avanzarPagColecciones()" [disabled]="pagColecciones > totalPagColecciones">
+                  Siguientes
+                </button>
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-12 text-muted text-center text-md-left">
+                ¿No encuentras lo que buscas?
+                <button type="button" class="btn btn-outline-primary btn-block"
+                  data-toggle="modal" data-target="#crearColeccion">
+                    Crear Nueva
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!--GÉNEROS-->
+      <div class="form-group">
+        <h3>Géneros <small>[Opcional]</small></h3>
+        <div class="py-3">
+          <div class="badge badge-genero" *ngFor="let genero of listaGeneros"
+            [ngClass]="{ 'active': genero.marcado }"
+            (click)="pulsarGenero(genero)">
+              {{ genero.nombre }}
+          </div>
+        </div>
+      </div>
+
+      <!--ETIQUETAS-->
+      <div class="form-group">
+        <h3>Etiquetas <small>[Opcional]</small></h3>
+
+        <div class="form-inline my-3">
+          <div>
+            <input type="text"
+              placeholder="Buscar Etiqueta"
+              formControlName="etiquetaQuery"
+              class="form-control"
+              (keyup.enter)="buscarEtiquetas()">
+          </div>
+          <div>
+            <button type="button" class="btn btn-outline-primary" (click)="buscarEtiquetas()">Añadir</button>
+          </div>
+        </div>
+        <div>
+          <div class="badge badge-etiqueta active" *ngFor="let etiqueta of libro.controls.etiquetas.controls; let i = index"
+            (click)="quitarEtiqueta(etiqueta, i)">
+              {{ etiqueta.controls.nombre.value }}
+          </div>
+        </div>
+
+        <h3>Etiquetas Sugeridas</h3>
+
+        <div>
+          <div class="badge badge-etiqueta" *ngFor="let etiqueta of listaEtiquetas; let i = index"
+            (click)="anadirEtiqueta(etiqueta, i)">
+              {{ etiqueta.nombre }}
+          </div>
+          <div class="alert alert-warning" *ngIf="listaEtiquetas.length == 0">
+            Selecciona al menos un género para ver las etiquetas sugeridas
+          </div>
+        </div>
+      </div>
+
+      <!--EDITORIAL/ES-->
+      <div class="form-group">
+        <h3>Editorial <small>[Opcional]</small></h3>
+        <div class="text-muted">
+          Indicar editorial
+          <input type="checkbox" class="checkbox-switch" id="conEditorial" formControlName="conEditorial">
+          <label for="conEditorial" data-toggle="collapse" data-target="#infoEditorial"></label>
+        </div>
+        <div class="collapse" id="infoEditorial">
+          <hr>
+          <div>
+            <div class="alert alert-success"
+              formArrayName="editoriales"
+              *ngFor="let editorial of libro.get('editoriales').controls; let i = index">
+              <div [formGroupName]="i" class="row align-items-center">
+                <div class="col-10">
+                  {{ editorial.controls.nombre.value }}
+                </div>
+                <div class="col-2">
+                  <div class="checkbox-list check" (click)="quitarEditorial(editorial, i)"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-inline my-3" *ngIf="libro.controls.editoriales.controls.length == 0">
+            <div>
+              <input type="text"
+                placeholder="Buscar Editorial"
+                formControlName="editorialQuery"
+                class="form-control"
+                (keyup.enter)="buscarEditoriales()">
+            </div>
+            <div>
+              <button type="button" class="btn btn-outline-primary" (click)="buscarEditoriales()">Buscar</button>
+            </div>
+          </div>
+
+          <div *ngIf="libro.controls.editoriales.controls.length == 0">
+            <div>
+              <div class="alert alert-secondary" *ngFor="let editorial of listaEditoriales; let i = index">
+                <div class="row align-items-center">
+                  <div class="col-10">
+                    {{ editorial.nombre }}
+                  </div>
+                  <div class="col-2">
+                    <div class="checkbox-list" (click)="anadirEditorial(editorial, i)"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="alert alert-warning" *ngIf="busquedaEditorial && listaEditoriales.length == 0">
+                No hay ninguna editorial que coincida con la búsqueda
+              </div>
+            </div>
+
+            <div class="row justify-content-center" *ngIf="totalPagEditoriales > 0">
+              <div class="col-6 col-md-3">
+                <button type="button" class="btn btn-outline-secondary btn-block"
+                  (click)="retrocederPagEditoriales()" [disabled]="pagEditoriales <= 1">
+                  Anteriores
+                </button>
+              </div>
+              <div class="col-6 col-md-3">
+                <button type="button" class="btn btn-outline-secondary btn-block"
+                  (click)="avanzarPagEditoriales()" [disabled]="pagEditoriales > totalPagEditoriales">
+                  Siguientes
+                </button>
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-12 text-muted text-center text-md-left">
+                ¿No encuentras lo que buscas?
+                <button type="button" class="btn btn-outline-primary btn-block"
+                  data-toggle="modal" data-target="#crearEditorial">
+                    Crear Nueva
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!--AÑO DE PUBLICACIÓN-->
+      <div class="form-group">
+        <h3>Año de Publicación <small>[Opcional]</small></h3>
+        <input type="number" class="form-control"
+          formControlName="publicacion" placeholder="1995">
+      </div>
+
+      <!--NÚMERO DE PÁGINAS-->
+      <div class="form-group">
+        <h3>Número de Páginas <small>[Opcional]</small></h3>
+        <input type="number" class="form-control"
+          formControlName="numPags" placeholder="500">
+      </div>
+
+      <!--ISBN-->
+      <div class="form-group">
+        <h3>ISBN <small>[Opcional]</small></h3>
+        <input type="text" class="form-control"
+          formControlName="isbn" placeholder="Número ISBN">
+      </div>
+
+      <!--IDIOMA-->
+      <div class="form-group">
+        <h3>Idioma</h3>
+        <select class="form-control" formControlName="idioma">
+          <option *ngFor="let idioma of idiomas" [value]="idioma.value">{{ idioma.nombre }}</option>
+        </select>
+      </div>
+
+      <!--PREMIO/S-->
+      <div class="form-group">
+        <h3>Premios <small>[Opcional]</small></h3>
+        <div class="text-muted">
+          El libro tiene algún Premio
+          <input type="checkbox" class="checkbox-switch" id="conPremios" formControlName="conPremio">
+          <label for="conPremios" data-toggle="collapse" data-target="#infoPremios"></label>
+        </div>
+        <div class="collapse" id="infoPremios">
+          <hr>
+          <div>
+            <div class="alert alert-success"
+              formArrayName="premios"
+              *ngFor="let premio of libro.get('premios').controls; let i = index">
+              <div [formGroupName]="i" class="row align-items-center">
+                <div class="col-10">
+                  {{ premio.controls.nombre.value }}
+                  <hr>
+                  Año <input type="number" class="form-control" formControlName="fecha" placeholder="1985">
+                  Posición <select class="form-control" formControlName="posicion">
+                    <option value="0">Ganador</option>
+                    <option value="1">Finalista</option>
+                    <option value="2">Semifinalista</option>
+                    <option value="3">Mención Especial</option>
+                    <option value="4">Otro</option>
+                  </select>
+                </div>
+                <div class="col-2">
+                  <div class="checkbox-list check" (click)="quitarPremio(premio, i)"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-inline my-3">
+            <div>
+              <input type="text"
+                placeholder="Buscar Premio"
+                formControlName="premioQuery"
+                class="form-control"
+                (keyup.enter)="buscarPremios()">
+            </div>
+            <div>
+              <button type="button" class="btn btn-outline-primary" (click)="buscarPremios()">Buscar</button>
+            </div>
+          </div>
+
+          <div>
+            <div>
+              <div class="alert alert-secondary" *ngFor="let premio of listaPremios; let i = index">
+                <div class="row align-items-center">
+                  <div class="col-10">
+                    {{ premio.nombre }}
+                  </div>
+                  <div class="col-2">
+                    <div class="checkbox-list" (click)="anadirPremio(premio, i)"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="alert alert-warning" *ngIf="busquedaPremio && listaPremios.length == 0">
+                No hay ningún premio que coincida con la búsqueda
+              </div>
+            </div>
+
+            <div class="row justify-content-center" *ngIf="totalPagPremios > 0">
+              <div class="col-6 col-md-3">
+                <button type="button" class="btn btn-outline-secondary btn-block"
+                  (click)="retrocederPagPremios()" [disabled]="pagPremios <= 1">
+                  Anteriores
+                </button>
+              </div>
+              <div class="col-6 col-md-3">
+                <button type="button" class="btn btn-outline-secondary btn-block"
+                  (click)="avanzarPagPremios()" [disabled]="pagPremios > totalPagPremios">
+                  Siguientes
+                </button>
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-12 text-muted text-center text-md-left">
+                ¿No encuentras lo que buscas?
+                <button type="button" class="btn btn-outline-primary btn-block"
+                  data-toggle="modal" data-target="#crearPremio">
+                    Crear Nuevo
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <div class="alert alert-danger" *ngIf="errorLibro != ''">
+        {{ errorLibro }}
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block btn-lg" [disabled]="libro.invalid">Continuar</button>
+
+    </form>
+  </div>
+
+</div>
+
+<app-coincidencias-nube [titulo]="libro.value.titulo"></app-coincidencias-nube>
+<app-crear-autor [sugerencia]="libro.value.autorQuery" (recibirAutor)="crearAutorLista($event)"></app-crear-autor>
+<app-crear-serie [sugerencia]="libro.value.serieQuery" (recibirSerie)="crearSerieLista($event)"></app-crear-serie>
+<app-crear-coleccion [sugerencia]="libro.value.coleccionQuery" (recibirColeccion)="crearColeccionLista($event)"></app-crear-coleccion>
+<app-crear-editorial [sugerencia]="libro.value.editorialQuery" (recibirEditorial)="crearEditorialLista($event)"></app-crear-editorial>
+<app-crear-premio [sugerencia]="libro.value.premioQuery" (recibirPremio)="crearPremioLista($event)"></app-crear-premio>
+<app-ajustar-portada></app-ajustar-portada>

@@ -1,0 +1,39 @@
+<aside id="mainMenu" [ngClass]="{ 'activo': activo }">
+  <div class="menu">
+  <header>
+    <h2>Gonzalo</h2>
+  </header>
+  <nav>
+    <ul>
+      <li routerLinkActive="active" routerLink="/mi-coleccion">
+          <div class="menu-icon menu-icon-coleccion"></div>
+          <div>Mi Colección</div>
+      </li>
+      <li routerLinkActive="active" routerLink="/recomendaciones">
+        <div class="menu-icon menu-icon-recom"></div>
+        <div>Recomendaciones</div>
+      </li>
+      <li routerLinkActive="active" routerLink="/la-nube">
+        <div class="menu-icon menu-icon-nube"></div>
+        <div>La Nube</div>
+      </li>
+      <li routerLinkActive="active" routerLink="/mi-biblioteca">
+        <div class="menu-icon menu-icon-biblios"></div>
+        <div>Mi Biblioteca</div>
+      </li>
+      <li routerLinkActive="active" routerLink="/amigos">
+        <div class="menu-icon menu-icon-amigos"></div>
+        <div>Mis Amigos</div>
+      </li>
+    </ul>
+  </nav>
+  <footer class="menu-config">
+    <div>
+      <i class="icon icon-config"></i>
+    </div>
+    <div>
+      <i class="icon icon-logout"></i>
+    </div>
+  </footer>
+  </div>
+</aside>
